@@ -1,0 +1,371 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1E53A5F16C0406900BB9568 /* shooter.fev in Resources */ = {isa = PBXBuildFile; fileRef = A1E53A5D16C0406900BB9568 /* shooter.fev */; };
+		A1E53A6016C0406900BB9568 /* shooter.fsb in Resources */ = {isa = PBXBuildFile; fileRef = A1E53A5E16C0406900BB9568 /* shooter.fsb */; };
+		A8274BDF165B8F250065C7A2 /* shootergame.app in Resources */ = {isa = PBXBuildFile; fileRef = A8274BDE165B8F250065C7A2 /* shootergame.app */; };
+		A8274BEB165B8F710065C7A2 /* ApplicationStartup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8274BE1165B8F710065C7A2 /* ApplicationStartup.cpp */; };
+		A8274BEC165B8F710065C7A2 /* ConnectionServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8274BE2165B8F710065C7A2 /* ConnectionServer.cpp */; };
+		A8274BED165B8F710065C7A2 /* GameEngineServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8274BE4165B8F710065C7A2 /* GameEngineServer.cpp */; };
+		A8274BEE165B8F710065C7A2 /* MainAppWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8274BE7165B8F710065C7A2 /* MainAppWindow.cpp */; };
+		A83076431137E1BE00082A69 /* libfmodex.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A83076421137E1BE00082A69 /* libfmodex.dylib */; };
+		A830779D11382B1A00082A69 /* libfmodevent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A830779C11382B1A00082A69 /* libfmodevent.dylib */; };
+		A8DEEFF5143A4D5A0040B229 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFE9143A4D5A0040B229 /* AudioToolbox.framework */; };
+		A8DEEFF6143A4D5A0040B229 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFEA143A4D5A0040B229 /* Carbon.framework */; };
+		A8DEEFF7143A4D5A0040B229 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFEB143A4D5A0040B229 /* Cocoa.framework */; };
+		A8DEEFF8143A4D5A0040B229 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFEC143A4D5A0040B229 /* CoreAudio.framework */; };
+		A8DEEFF9143A4D5A0040B229 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFED143A4D5A0040B229 /* CoreMIDI.framework */; };
+		A8DEEFFA143A4D5A0040B229 /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFEE143A4D5A0040B229 /* DiscRecording.framework */; };
+		A8DEEFFB143A4D5A0040B229 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFEF143A4D5A0040B229 /* IOKit.framework */; };
+		A8DEEFFC143A4D5A0040B229 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFF0143A4D5A0040B229 /* OpenGL.framework */; };
+		A8DEEFFD143A4D5A0040B229 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFF1143A4D5A0040B229 /* QTKit.framework */; };
+		A8DEEFFE143A4D5A0040B229 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFF2143A4D5A0040B229 /* QuartzCore.framework */; };
+		A8DEEFFF143A4D5A0040B229 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFF3143A4D5A0040B229 /* QuickTime.framework */; };
+		A8DEF000143A4D5A0040B229 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DEEFF4143A4D5A0040B229 /* WebKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8D0C4E960486CD37000505A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D0C4E970486CD37000505A6 /* shooter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shooter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A13FEE5D16C187E300D706E2 /* VectorData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VectorData.h; sourceTree = "<group>"; };
+		A1E53A5D16C0406900BB9568 /* shooter.fev */ = {isa = PBXFileReference; lastKnownFileType = file; name = shooter.fev; path = ../../media/shooter.fev; sourceTree = "<group>"; };
+		A1E53A5E16C0406900BB9568 /* shooter.fsb */ = {isa = PBXFileReference; lastKnownFileType = file; name = shooter.fsb; path = ../../media/shooter.fsb; sourceTree = "<group>"; };
+		A8274BDE165B8F250065C7A2 /* shootergame.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = shootergame.app; path = ../../game/mac/shootergame.app; sourceTree = "<group>"; };
+		A8274BE1165B8F710065C7A2 /* ApplicationStartup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationStartup.cpp; sourceTree = "<group>"; };
+		A8274BE2165B8F710065C7A2 /* ConnectionServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConnectionServer.cpp; sourceTree = "<group>"; };
+		A8274BE3165B8F710065C7A2 /* ConnectionServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionServer.h; sourceTree = "<group>"; };
+		A8274BE4165B8F710065C7A2 /* GameEngineServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameEngineServer.cpp; sourceTree = "<group>"; };
+		A8274BE5165B8F710065C7A2 /* GameEngineServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameEngineServer.h; sourceTree = "<group>"; };
+		A8274BE6165B8F710065C7A2 /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
+		A8274BE7165B8F710065C7A2 /* MainAppWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainAppWindow.cpp; sourceTree = "<group>"; };
+		A8274BE8165B8F710065C7A2 /* MainAppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainAppWindow.h; sourceTree = "<group>"; };
+		A8274BE9165B8F710065C7A2 /* MainComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainComponent.h; sourceTree = "<group>"; };
+		A8274BEA165B8F710065C7A2 /* PointerDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointerDictionary.h; sourceTree = "<group>"; };
+		A83076421137E1BE00082A69 /* libfmodex.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodex.dylib; path = fmod/api/lib/libfmodex.dylib; sourceTree = FMOD_SDK; };
+		A830779C11382B1A00082A69 /* libfmodevent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodevent.dylib; path = fmod/fmoddesignerapi/api/lib/libfmodevent.dylib; sourceTree = FMOD_SDK; };
+		A8DEEFE9143A4D5A0040B229 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		A8DEEFEA143A4D5A0040B229 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		A8DEEFEB143A4D5A0040B229 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		A8DEEFEC143A4D5A0040B229 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		A8DEEFED143A4D5A0040B229 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		A8DEEFEE143A4D5A0040B229 /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
+		A8DEEFEF143A4D5A0040B229 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		A8DEEFF0143A4D5A0040B229 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		A8DEEFF1143A4D5A0040B229 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
+		A8DEEFF2143A4D5A0040B229 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A8DEEFF3143A4D5A0040B229 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
+		A8DEEFF4143A4D5A0040B229 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D0C4E910486CD37000505A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A83076431137E1BE00082A69 /* libfmodex.dylib in Frameworks */,
+				A830779D11382B1A00082A69 /* libfmodevent.dylib in Frameworks */,
+				A8DEEFF5143A4D5A0040B229 /* AudioToolbox.framework in Frameworks */,
+				A8DEEFF6143A4D5A0040B229 /* Carbon.framework in Frameworks */,
+				A8DEEFF7143A4D5A0040B229 /* Cocoa.framework in Frameworks */,
+				A8DEEFF8143A4D5A0040B229 /* CoreAudio.framework in Frameworks */,
+				A8DEEFF9143A4D5A0040B229 /* CoreMIDI.framework in Frameworks */,
+				A8DEEFFA143A4D5A0040B229 /* DiscRecording.framework in Frameworks */,
+				A8DEEFFB143A4D5A0040B229 /* IOKit.framework in Frameworks */,
+				A8DEEFFC143A4D5A0040B229 /* OpenGL.framework in Frameworks */,
+				A8DEEFFD143A4D5A0040B229 /* QTKit.framework in Frameworks */,
+				A8DEEFFE143A4D5A0040B229 /* QuartzCore.framework in Frameworks */,
+				A8DEEFFF143A4D5A0040B229 /* QuickTime.framework in Frameworks */,
+				A8DEF000143A4D5A0040B229 /* WebKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		195DF8CFFE9D517E11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D0C4E970486CD37000505A6 /* shooter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20286C29FDCF999611CA2CEA /* juce_application */ = {
+			isa = PBXGroup;
+			children = (
+				20286C2AFDCF999611CA2CEA /* Sources */,
+				20286C2CFDCF999611CA2CEA /* Resources */,
+				20286C32FDCF999611CA2CEA /* External Frameworks and Libraries */,
+				195DF8CFFE9D517E11CA2CBB /* Products */,
+			);
+			name = juce_application;
+			sourceTree = "<group>";
+		};
+		20286C2AFDCF999611CA2CEA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A8274BE1165B8F710065C7A2 /* ApplicationStartup.cpp */,
+				A8274BE2165B8F710065C7A2 /* ConnectionServer.cpp */,
+				A8274BE3165B8F710065C7A2 /* ConnectionServer.h */,
+				A8274BE4165B8F710065C7A2 /* GameEngineServer.cpp */,
+				A8274BE5165B8F710065C7A2 /* GameEngineServer.h */,
+				A8274BE6165B8F710065C7A2 /* headers.h */,
+				A8274BE7165B8F710065C7A2 /* MainAppWindow.cpp */,
+				A8274BE8165B8F710065C7A2 /* MainAppWindow.h */,
+				A8274BE9165B8F710065C7A2 /* MainComponent.h */,
+				A8274BEA165B8F710065C7A2 /* PointerDictionary.h */,
+				A13FEE5D16C187E300D706E2 /* VectorData.h */,
+			);
+			name = Sources;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		20286C2CFDCF999611CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A1E53A5D16C0406900BB9568 /* shooter.fev */,
+				A1E53A5E16C0406900BB9568 /* shooter.fsb */,
+				A8274BDE165B8F250065C7A2 /* shootergame.app */,
+				8D0C4E960486CD37000505A6 /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		20286C32FDCF999611CA2CEA /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				A83076421137E1BE00082A69 /* libfmodex.dylib */,
+				A830779C11382B1A00082A69 /* libfmodevent.dylib */,
+				A8DEEFE9143A4D5A0040B229 /* AudioToolbox.framework */,
+				A8DEEFEA143A4D5A0040B229 /* Carbon.framework */,
+				A8DEEFEB143A4D5A0040B229 /* Cocoa.framework */,
+				A8DEEFEC143A4D5A0040B229 /* CoreAudio.framework */,
+				A8DEEFED143A4D5A0040B229 /* CoreMIDI.framework */,
+				A8DEEFEE143A4D5A0040B229 /* DiscRecording.framework */,
+				A8DEEFEF143A4D5A0040B229 /* IOKit.framework */,
+				A8DEEFF0143A4D5A0040B229 /* OpenGL.framework */,
+				A8DEEFF1143A4D5A0040B229 /* QTKit.framework */,
+				A8DEEFF2143A4D5A0040B229 /* QuartzCore.framework */,
+				A8DEEFF3143A4D5A0040B229 /* QuickTime.framework */,
+				A8DEEFF4143A4D5A0040B229 /* WebKit.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D0C4E890486CD37000505A6 /* Target App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84F30CBF08FEAA620087E26C /* Build configuration list for PBXNativeTarget "Target App" */;
+			buildPhases = (
+				8D0C4E8C0486CD37000505A6 /* Resources */,
+				8D0C4E8F0486CD37000505A6 /* Sources */,
+				8D0C4E910486CD37000505A6 /* Frameworks */,
+				A830768A1137E22300082A69 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Target App";
+			productInstallPath = "$(HOME)/Applications";
+			productName = juce_application;
+			productReference = 8D0C4E970486CD37000505A6 /* shooter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		20286C28FDCF999611CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 84F30CC308FEAA620087E26C /* Build configuration list for PBXProject "shooter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 20286C29FDCF999611CA2CEA /* juce_application */;
+			projectDirPath = "";
+			projectRoot = ..;
+			targets = (
+				8D0C4E890486CD37000505A6 /* Target App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D0C4E8C0486CD37000505A6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8274BDF165B8F250065C7A2 /* shootergame.app in Resources */,
+				A1E53A5F16C0406900BB9568 /* shooter.fev in Resources */,
+				A1E53A6016C0406900BB9568 /* shooter.fsb in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A830768A1137E22300082A69 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "if ! [ -e \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks\" ]\nthen\n\tmkdir \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks\"\nfi\ncp -f \"$FMOD_SDK/fmod/api/lib/libfmodex.dylib\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/libfmodex.dylib\"\ncp -f \"$FMOD_SDK/fmod/fmoddesignerapi/api/lib/libfmodevent.dylib\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/libfmodevent.dylib\"\ninstall_name_tool -change ./libfmodex.dylib @loader_path/../Frameworks/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"\ninstall_name_tool -change ./libfmodex.dylib @loader_path/../Frameworks/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/libfmodevent.dylib\"\ninstall_name_tool -change ./libfmodevent.dylib @loader_path/../Frameworks/libfmodevent.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D0C4E8F0486CD37000505A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8274BEB165B8F710065C7A2 /* ApplicationStartup.cpp in Sources */,
+				A8274BEC165B8F710065C7A2 /* ConnectionServer.cpp in Sources */,
+				A8274BED165B8F710065C7A2 /* GameEngineServer.cpp in Sources */,
+				A8274BEE165B8F710065C7A2 /* MainAppWindow.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		84F30CC008FEAA620087E26C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
+					"DEBUG=1",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_1)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_2)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "APPLICATION_BUNDLE=\\\"$(PRODUCT_NAME).app\\\"";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(FMOD_SDK)/fmod/fmoddesignerapi/api/lib",
+					"$(FMOD_SDK)/fmod/api/lib",
+					"$(JUCE_SOURCE)/bin",
+				);
+				OTHER_LDFLAGS = "-ljucedebug";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		84F30CC108FEAA620087E26C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_1)",
+					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_2)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "APPLICATION_BUNDLE=\\\"$(PRODUCT_NAME).app\\\"";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(FMOD_SDK)/fmod/fmoddesignerapi/api/lib",
+					"$(FMOD_SDK)/fmod/api/lib",
+					"$(JUCE_SOURCE)/bin",
+				);
+				OTHER_LDFLAGS = "-ljuce";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		84F30CC408FEAA620087E26C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_1 = "FMOD_SDK=\\\"$(FMOD_SDK)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_2 = "\"PROJECT_NAME=\\\"$(PROJECT_NAME)\\\"\"";
+				HEADER_SEARCH_PATHS = (
+					"$(FMOD_SDK)",
+					"$(JUCE_SOURCE)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(FMOD_SDK)/fmod/api/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		84F30CC508FEAA620087E26C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_1 = "FMOD_SDK=\\\"$(FMOD_SDK)\\\"";
+				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_PROJECT_2 = "\"PROJECT_NAME=\\\"$(PROJECT_NAME)\\\"\"";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(FMOD_SDK)",
+					"$(JUCE_SOURCE)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(FMOD_SDK)/fmod/api/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		84F30CBF08FEAA620087E26C /* Build configuration list for PBXNativeTarget "Target App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F30CC008FEAA620087E26C /* Debug */,
+				84F30CC108FEAA620087E26C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		84F30CC308FEAA620087E26C /* Build configuration list for PBXProject "shooter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F30CC408FEAA620087E26C /* Debug */,
+				84F30CC508FEAA620087E26C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 20286C28FDCF999611CA2CEA /* Project object */;
+}

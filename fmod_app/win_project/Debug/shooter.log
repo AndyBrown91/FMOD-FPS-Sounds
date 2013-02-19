@@ -1,0 +1,20 @@
+﻿Build started 30/01/2013 13:15:27.
+     1>Project "I:\Users\Andy\Desktop\University\Audio for Games\Assignment\shooter\fmod_app\win_project\shooter.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\Juce Project.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         S:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D "PROJECT_NAME=\"shooter\"" /D WIN32 /D _DEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0600 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\ApplicationStartup.cpp ..\ConnectionServer.cpp ..\GameEngineServer.cpp ..\MainAppWindow.cpp
+         MainAppWindow.cpp
+     1>i:\users\andy\desktop\university\audio for games\assignment\shooter\fmod_app\mainappwindow.h(35): fatal error C1083: Cannot open include file: 'juce/juce.h': No such file or directory
+         GameEngineServer.cpp
+     1>i:\users\andy\desktop\university\audio for games\assignment\shooter\fmod_app\headers.h(5): fatal error C1083: Cannot open include file: 'juce/juce.h': No such file or directory
+         ConnectionServer.cpp
+     1>i:\users\andy\desktop\university\audio for games\assignment\shooter\fmod_app\headers.h(5): fatal error C1083: Cannot open include file: 'juce/juce.h': No such file or directory
+         ApplicationStartup.cpp
+     1>i:\users\andy\desktop\university\audio for games\assignment\shooter\fmod_app\mainappwindow.h(35): fatal error C1083: Cannot open include file: 'juce/juce.h': No such file or directory
+         Generating Code...
+     1>Done Building Project "I:\Users\Andy\Desktop\University\Audio for Games\Assignment\shooter\fmod_app\win_project\shooter.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.47
