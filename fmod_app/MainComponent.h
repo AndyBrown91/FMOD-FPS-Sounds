@@ -115,7 +115,7 @@ namespace Globals {
     //Whether they're using the grenadelauncher or gun
     //Whether the handlecreate function has been called
     //Whether handle vector has been called for static objects, so there aren't constant updates from objects that don't move (house/waterfall)
-    bool inWater, grenadeLauncher, created, staticsPositioned;
+    bool inWater, grenadeLauncher, grenadeWater;
 }
 //typedef for storing a dictionary of Vector locations and FMOD events related to each object
 typedef PointerDictionary<VectorData> VectorDictionary;
@@ -753,7 +753,16 @@ public:
                 if(grenadeData)
                 {                    
                     Event* event;
-                    String grenadeString = Strings::GunsLocation+"explode";
+                    String grenadeString;
+                    
+                    if(Globals::grenadeWater)
+                    {
+                        grenadeString = Strings::GunsLocation+"explodeWater";
+                        Globals::grenadeWater = false;
+                    }
+                    else
+                        grenadeString = Strings::GunsLocation+"explode";
+                    
                     ERRCHECK(eventsystem->getEvent(grenadeString.toUTF8(),
                                                    FMOD_EVENT_DEFAULT, 
                                                    &event));
@@ -878,6 +887,14 @@ public:
             //Get distance from collision velocity
             DBG("Bullet hit = " << collision.otherName << " bul vel" << bulletData->getVel()->z << " collision" << collision.velocity);
             
+        }
+        
+        else if (name == "grenade")
+        {
+            if (collision.otherName == Strings::Water)
+            {
+                Globals::grenadeWater = true;
+            }
         }
       
 	}
