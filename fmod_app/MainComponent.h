@@ -161,7 +161,7 @@ public:
 		ERRCHECK(EventSystem_Create(&eventsystem));
         
 		// initialise FMOD and its event system
-		ERRCHECK(eventsystem->init(64, FMOD_INIT_NORMAL, 0, FMOD_EVENT_INIT_NORMAL));
+		ERRCHECK(eventsystem->init(256, FMOD_INIT_NORMAL, 0, FMOD_EVENT_INIT_NORMAL));
 		
 		// define our resources path (on the Mac this is within the app bundle)
 		String resourcesPath = getResourcesPath();
@@ -179,8 +179,8 @@ public:
         ERRCHECK(eventsystem->createReverb(&largeHouseReverb));
         
         // get the reverb properties set up in FMOD designer
-		FMOD_REVERB_PROPERTIES smallHouseProperties = FMOD_PRESET_ROOM;
-        FMOD_REVERB_PROPERTIES largeHouseProperties = FMOD_PRESET_LIVINGROOM;
+		FMOD_REVERB_PROPERTIES smallHouseProperties = FMOD_PRESET_LIVINGROOM;
+        FMOD_REVERB_PROPERTIES largeHouseProperties = FMOD_PRESET_ROOM;
 		//ERRCHECK(eventsystem->getReverbPreset(Strings::smallhouseverb, &smallHouseVerbProperties, 0));
 		// ..and apply them to our reverb
         ERRCHECK(smallHouseReverb->setProperties(&smallHouseProperties));
@@ -231,7 +231,7 @@ public:
         String atmosEvent = Strings::AtmosLocation+"atmos";
         
 		ERRCHECK(eventsystem->getEvent(atmosEvent.toUTF8(), FMOD_EVENT_DEFAULT, &atmos));
-		//ERRCHECK(atmos->start());		
+		ERRCHECK(atmos->start());		
         
         //Create vector data pointers for bullet and grenade, No handleCreate is ever called for them, but their vectordata is important
         objects.add(Strings::Bullet, new VectorData());
@@ -534,11 +534,9 @@ public:
         {
             if (name == Strings::ObjectRiver || name == Strings::ObjectSmallWaterfall || name == Strings::ObjectWaterfall)
             {
-                DBG("Settings " << uniqueString << " to position" << vector->x << " " << vector->y << " " << vector->z);
                 VectorData* objectData = objects.get(uniqueString);
                 if (objectData)
                 {
-                    DBG(uniqueString << " found");
                     objectData->setVectors(vector, nullptr, nullptr);
                 }
                 startLooping (name, gameObjectInstanceID);
@@ -569,12 +567,12 @@ public:
                 {
                     DBG("Settings " << name <<1<< " to position" << vector->x << " " << vector->y << " " << vector->z);
                     // set the position properties in game world units (metres here)                    
-                    ERRCHECK(underBridgeReverb1->set3DAttributes(vector, 4, 8));
+                    ERRCHECK(underBridgeReverb1->set3DAttributes(vector, 4, 6));
                 }
                 else
                 {
                     DBG("Settings " << name <<2<< " to position" << vector->x << " " << vector->y << " " << vector->z);
-                    ERRCHECK(underBridgeReverb2->set3DAttributes(vector, 4, 8));
+                    ERRCHECK(underBridgeReverb2->set3DAttributes(vector, 4, 6));
                 }
                 
             }
@@ -908,8 +906,9 @@ public:
             if (collision.velocity > 0)
             {
                 String uniqueString = makeUniqueString(name, gameObjectInstanceID);
-                if (name == Strings::ObjectBarrel || name == Strings::ObjectInkCan || name == Strings::ObjectBrick)
+                if (name == Strings::ObjectBarrel || /*name == Strings::ObjectInkCan ||*/ name == Strings::ObjectBrick)
                 {
+                    //DELETED SOUND DEF FOR INKCAN COS YOU'RE A TIT
                     String collisionString = Strings::CollisionsLocation + name;
                     DBG(collisionString);
                     VectorData* collisionObject = objects.get(uniqueString);

@@ -17,7 +17,7 @@ ConnectionServer::~ConnectionServer ()
 
 void ConnectionServer::run()
 {
-	const int bufferSize = 8192;
+	const int bufferSize = 32768;
 	char buffer[bufferSize];
 	
 	int lastTime = 0;
