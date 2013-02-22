@@ -101,20 +101,20 @@ namespace Strings
     static const String  FootstepLocation = "shooter/footsteps/";
     static const String  WaterLocation = "shooter/water/";
     static const String  AtmosLocation = "shooter/atmosphere/";
+    static const String  CollisionsLocation = "shooter/collisions/";
     
 // C Strings
     static const char* FEVFile       = "shooter.fev";
-    static const char* AtmosEvent    = "shooter/root/atmos";
     
 //FMOD Parameters
     static const char* Velocity = "velocity";
+    static const char* ExplodeDistance = "explodeDistance";
 }
 
 namespace Globals {
     //Whether the soldier is in the water
     //Whether they're using the grenadelauncher or gun
-    //Whether the handlecreate function has been called
-    //Whether handle vector has been called for static objects, so there aren't constant updates from objects that don't move (house/waterfall)
+
     bool inWater, grenadeLauncher, grenadeWater;
 }
 //typedef for storing a dictionary of Vector locations and FMOD events related to each object
@@ -179,8 +179,8 @@ public:
         ERRCHECK(eventsystem->createReverb(&largeHouseReverb));
         
         // get the reverb properties set up in FMOD designer
-		FMOD_REVERB_PROPERTIES smallHouseProperties = FMOD_PRESET_LIVINGROOM;
-        FMOD_REVERB_PROPERTIES largeHouseProperties = FMOD_PRESET_STONEROOM;
+		FMOD_REVERB_PROPERTIES smallHouseProperties = FMOD_PRESET_ROOM;
+        FMOD_REVERB_PROPERTIES largeHouseProperties = FMOD_PRESET_LIVINGROOM;
 		//ERRCHECK(eventsystem->getReverbPreset(Strings::smallhouseverb, &smallHouseVerbProperties, 0));
 		// ..and apply them to our reverb
         ERRCHECK(smallHouseReverb->setProperties(&smallHouseProperties));
@@ -193,8 +193,8 @@ public:
         ERRCHECK(underBridgeReverb2->setProperties(&underBridgeProperties));
 		
 		// set the "ambient" reverb using a buit-in preset
-		FMOD_REVERB_PROPERTIES ambientProperties = FMOD_PRESET_FOREST;
-		//ERRCHECK(eventsystem->setReverbAmbientProperties(&ambientProperties));
+		FMOD_REVERB_PROPERTIES ambientProperties = FMOD_PRESET_PLAIN;
+		ERRCHECK(eventsystem->setReverbAmbientProperties(&ambientProperties));
 	}
 	
 	void shutdownFMODEvent()
@@ -228,7 +228,9 @@ public:
 	{
 		initFMODEvent();
 		
-		ERRCHECK(eventsystem->getEvent(Strings::AtmosEvent, FMOD_EVENT_DEFAULT, &atmos));
+        String atmosEvent = Strings::AtmosLocation+"atmos";
+        
+		ERRCHECK(eventsystem->getEvent(atmosEvent.toUTF8(), FMOD_EVENT_DEFAULT, &atmos));
 		//ERRCHECK(atmos->start());		
         
         //Create vector data pointers for bullet and grenade, No handleCreate is ever called for them, but their vectordata is important
@@ -368,7 +370,7 @@ public:
             {
                 waterData->stopEvents();
                 String waterString = Strings::WaterLocation+name;
-                DBG("Starting = " << name);
+                DBG("Starting = " << uniqueString);
                 Event* event;
                 
                 ERRCHECK(eventsystem->getEvent(waterString.toUTF8(),
@@ -532,8 +534,13 @@ public:
         {
             if (name == Strings::ObjectRiver || name == Strings::ObjectSmallWaterfall || name == Strings::ObjectWaterfall)
             {
-                DBG("Settings " << name << " to position" << vector->x << " " << vector->y << " " << vector->z);
-                objects.get(uniqueString)->setVectors(vector, nullptr, nullptr);
+                DBG("Settings " << uniqueString << " to position" << vector->x << " " << vector->y << " " << vector->z);
+                VectorData* objectData = objects.get(uniqueString);
+                if (objectData)
+                {
+                    DBG(uniqueString << " found");
+                    objectData->setVectors(vector, nullptr, nullptr);
+                }
                 startLooping (name, gameObjectInstanceID);
             }
             
@@ -544,7 +551,7 @@ public:
             
             if (name == Strings::ObjectSmallHouse)
             {
-                ERRCHECK(smallHouseReverb->set3DAttributes(vector, 2, 8));
+                ERRCHECK(smallHouseReverb->set3DAttributes(vector, 4, 6));
             }
             
             if (name == Strings::ObjectLargeHouse)
@@ -605,12 +612,10 @@ public:
             if (param == Strings::Water)
             {
                 String waterString = Strings::WaterLocation + content;
-                if (content == Strings::WaterImpact)
-                {
                     VectorData* soldierData = objects.get(Strings::Soldier);
                     if(soldierData)
                     {
-                        //Soldier hits water, splash sound
+                        //Soldier hits water/jumps while in water
                         Event* event;
                         
                         ERRCHECK(eventsystem->getEvent(waterString.toUTF8(),
@@ -619,12 +624,7 @@ public:
                         soldierData->addEvent(event);
                         ERRCHECK(event->start());
                     }
-                }
-                else if (content == Strings::WaterJump)
-                {
-                    //Soldier jumps while in water
-                    
-                }
+            
             }
             else if (param == Strings::Gun)
             {
@@ -668,7 +668,7 @@ public:
                 
                 else if (content == Strings::GunEmpty)
                 {
-                    //Ammo is unlimited, should never be called, included for future-proofing
+                    //Ammo is unlimited, should never be called, included for future
                 }
             }
         }
@@ -753,6 +753,7 @@ public:
                 if(grenadeData)
                 {                    
                     Event* event;
+                    Event* ring;
                     String grenadeString;
                     
                     if(Globals::grenadeWater)
@@ -766,9 +767,31 @@ public:
                     ERRCHECK(eventsystem->getEvent(grenadeString.toUTF8(),
                                                    FMOD_EVENT_DEFAULT, 
                                                    &event));
-                  
                     grenadeData->addEvent(event);
                     ERRCHECK(event->start());
+                    
+                    
+                    grenadeString = grenadeString+"Ring";
+                    
+                    ERRCHECK(eventsystem->getEvent(grenadeString.toUTF8(),
+                                                   FMOD_EVENT_DEFAULT, 
+                                                   &ring));
+                    
+                    VectorData* soldierData = objects.get(Strings::Soldier);
+                    
+                    if (soldierData) {
+                        soldierData->addEvent(ring);
+                        
+                        EventParameter* param;
+                        ERRCHECK(ring->getParameter(Strings::ExplodeDistance, &param));
+                        float distance = grenadeData->getPos()->z - soldierData->getPos()->z;
+                        DBG(distance);
+                        ERRCHECK(param->setValue(distance));
+                        //ERRCHECK(ring->start());
+                        
+                    }
+                  
+                    
                 }
                 
             }
@@ -831,8 +854,6 @@ public:
 	void handleHit(String const& name, int gameObjectInstanceID, Collision const& collision)
 	{
         if (name == Strings::Soldier) {
-            //DBG(name + collision.otherName);
-            //Sprint = 1, jog = 0.46, walk = 0.1
             VectorData* soldierData = objects.get(Strings::Soldier);
             if(soldierData)
             {
@@ -844,28 +865,29 @@ public:
                     footstepString = Strings::FootstepLocation+collision.otherName;
                 
                 //DBG(footstepString);
+                Event* event;
                 
-                    Event* event;
-                    
-                    ERRCHECK(eventsystem->getEvent(footstepString.toUTF8(),
-                                                   FMOD_EVENT_DEFAULT, 
-                                                   &event));
-                    
-
-//                    EventParameter* param;
-//                    ERRCHECK(event->getParameter(Strings::Velocity, &param));
-//                    ERRCHECK(param->setValue(collision.velocity));
-//                    
-                    soldierData->addEvent(event);
-                    ERRCHECK(event->start());
-
+                ERRCHECK(eventsystem->getEvent(footstepString.toUTF8(),
+                                               FMOD_EVENT_DEFAULT, 
+                                               &event));
+                
+                EventParameter* param;
+                //Not error checked as some footsteps don't have a velocity parameter
+                event->getParameter(Strings::Velocity, &param);
+                
+                if (param != nullptr)
+                    ERRCHECK(param->setValue(collision.velocity));
+                
+                soldierData->addEvent(event);
+                ERRCHECK(event->start());
+                
             }
         }
         
         else if (name == Strings::Bullet)
         {
             String bulletString = Strings::GunsLocation + name + "/" + collision.otherName;
-            DBG(bulletString);
+            
             VectorData* bulletData = objects.get(Strings::Bullet);
             if(bulletData)
             {                    
@@ -875,28 +897,44 @@ public:
                                                FMOD_EVENT_DEFAULT, 
                                                &event));
                 
-                
-                //                    EventParameter* param;
-                //                    ERRCHECK(event->getParameter(Strings::Velocity, &param));
-                //                    ERRCHECK(param->setValue(collision.velocity));
-                //                    
                 bulletData->addEvent(event);
                 ERRCHECK(event->start());
-            }
-            //const Vector3* bulletVec = objects.get(Strings::Bullet)->getPos();
-            //Get distance from collision velocity
-            DBG("Bullet hit = " << collision.otherName << " bul vel" << bulletData->getVel()->z << " collision" << collision.velocity);
-            
+            }            
         }
         
-        else if (name == "grenade")
+        else
         {
-            if (collision.otherName == Strings::Water)
+            DBG(name << " Collided with = " << collision.otherName << " Velocity = " << collision.velocity);
+            if (collision.velocity > 0)
             {
-                Globals::grenadeWater = true;
+                String uniqueString = makeUniqueString(name, gameObjectInstanceID);
+                if (name == Strings::ObjectBarrel || name == Strings::ObjectInkCan || name == Strings::ObjectBrick)
+                {
+                    String collisionString = Strings::CollisionsLocation + name;
+                    DBG(collisionString);
+                    VectorData* collisionObject = objects.get(uniqueString);
+                    
+                    if (collisionObject)
+                    {
+                        Event* event;
+                        
+                        ERRCHECK(eventsystem->getEvent(collisionString.toUTF8(),
+                                                       FMOD_EVENT_DEFAULT, 
+                                                       &event));
+                        
+                        EventParameter* param;
+                        ERRCHECK(event->getParameter(Strings::Velocity, &param));
+                        
+                        ERRCHECK(param->setValue(collision.velocity));
+                        
+                        collisionObject->addEvent(event);
+                        ERRCHECK(event->start());
+                    }
+                    
+                }
             }
         }
-      
+        
 	}
 };
 
