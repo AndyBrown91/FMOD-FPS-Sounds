@@ -58,7 +58,7 @@ namespace Strings
 {
 //Unique items
     static const String Bullet = "bullet";
-    static const String Grenade = "grenade0";
+    static const String Grenade = "grenade";
     static const String Soldier = "soldier";
     static const String Camera = "camera";
     static const String ElectricBox = "generator";
@@ -105,18 +105,32 @@ namespace Strings
     
 // C Strings
     static const char* FEVFile       = "shooter.fev";
+    static const char* BirdsFlying = "shooter/atmosphere/birdsFlying";
+    static const char* RunningBreath = "shooter/atmosphere/breathing";
     
 //FMOD Parameters
     static const char* Velocity = "velocity";
     static const char* ExplodeDistance = "explodeDistance";
+    static const char* RunningParam = "runningCounter";
+    static const char* BirdCounter = "birdCounter";
 }
 
 namespace Globals {
     //Whether the soldier is in the water
     //Whether they're using the grenadelauncher or gun
-
-    bool inWater, grenadeLauncher, grenadeWater;
+    //Whether soldier is running
+    bool inWater, grenadeLauncher, grenadeWater, running;
+    //Number of rivers created
+    //Keeps track of how long soldier has been running, for out of breath type sounds
+    //A counter for playing the sounds of birds flying away once the gun hasn't been fired for a set amount of time
+    int riverCounter, runningCounter, birdCounter;
 }
+
+//The amount of ticks that must have past since the last gun shot for the birds to fly away again
+#define birdCounterTrigger 750
+//The amount of ticks that must have past for the birds to return and the bird event to start again
+
+
 //typedef for storing a dictionary of Vector locations and FMOD events related to each object
 typedef PointerDictionary<VectorData> VectorDictionary;
 
@@ -126,15 +140,21 @@ class MainComponent  :	public Component,
 private:
 	// FMOD objects
     EventSystem* eventsystem;	
+    
 	Event* atmos;
+    //Global so it can be turned off when birds fly away
+    Event* birdEvent;
+    //Loads sound event on start up to stop delay when gun is fired
+    Event* birdsFlying;
+    //Global to allow param control in footsteps function, but create in handleCreate
+    Event* runningEvent;
+    
 	EventReverb* underBridgeReverb1;
     EventReverb* underBridgeReverb2;
     EventReverb* smallHouseReverb;
     EventReverb* largeHouseReverb;
     
     VectorDictionary objects;
-   
-
     
     enum Commands
 	{
@@ -187,7 +207,7 @@ public:
         ERRCHECK(largeHouseReverb->setProperties(&largeHouseProperties));
         
 		// get the preset reverb property
-		FMOD_REVERB_PROPERTIES underBridgeProperties = FMOD_PRESET_CAVE;
+		FMOD_REVERB_PROPERTIES underBridgeProperties = FMOD_PRESET_STONECORRIDOR;/*FMOD_PRESET_CAVE;*/
 		// ..and apply them to our reverb
 		ERRCHECK(underBridgeReverb1->setProperties(&underBridgeProperties));
         ERRCHECK(underBridgeReverb2->setProperties(&underBridgeProperties));
@@ -195,6 +215,12 @@ public:
 		// set the "ambient" reverb using a buit-in preset
 		FMOD_REVERB_PROPERTIES ambientProperties = FMOD_PRESET_PLAIN;
 		ERRCHECK(eventsystem->setReverbAmbientProperties(&ambientProperties));
+        
+        //Sets bird counter so it will go off for the first gun shot
+        Globals::birdCounter = birdCounterTrigger;
+        ERRCHECK(eventsystem->getEvent(Strings::BirdsFlying,
+                                       FMOD_EVENT_DEFAULT, 
+                                       &birdsFlying));
 	}
 	
 	void shutdownFMODEvent()
@@ -214,7 +240,35 @@ public:
 		if(eventsystem) // make sure we have an event system running
 		{
 			ERRCHECK(eventsystem->update()); // need to call this regularly, docs say once per "frame"
+            
+            //Checks if soldier is running, increases counter
+            if (Globals::running)
+            {
+                if (Globals::runningCounter < 1200)
+                    Globals::runningCounter++;
+            }
+            else
+            {
+                //Used for checking how long the soldier has been resting for, so the soldier can't stop for a second and suddenly be completely re-energised
+                if(Globals::runningCounter > 0)
+                    Globals::runningCounter = Globals::runningCounter - 2;
+            }
+            
+            Globals::birdCounter++;
+            
+            if (Globals::birdCounter < birdCounterTrigger)
+            {
+                if (birdEvent != nullptr)
+                {
+                    //Makes the bird sounds fade in after they have flown away, but stops once the flying away sound is ready to be triggered again
+                    EventParameter* param;
+                    ERRCHECK(birdEvent->getParameter(Strings::BirdCounter, &param));
+                    //DBG("Setting bird counter to " << Globals::birdCounter);
+                    ERRCHECK(param->setValue(Globals::birdCounter));
+                }
+            }
 		}
+        DBG(Globals::runningCounter);
 	}
     
     //Used to give each instance of a barrel or brick etc. a unique name for storing in positions dictionary
@@ -254,6 +308,9 @@ public:
         
         electricBox->addEvent(event);
         ERRCHECK(event->start());
+        
+        //Sets the river counter, used to give different rivers a different sound
+        Globals::riverCounter = 0;
 	}
 	
 	void handleDisconnect()
@@ -333,7 +390,7 @@ public:
             uniqueString = makeUniqueString(name, gameObjectInstanceID);
         //Creates unique names for all repeated objects
         
-        //Adds these items to Objects so they can be accessed
+        //Adds items to objects so they can be accessed
         
         objects.add(uniqueString, new VectorData());
         
@@ -343,45 +400,38 @@ public:
             VectorData* soldier = objects.get(uniqueString);
             if (soldier)
             {
+                //Adds randomly positioned bird sounds which follow the soldier but trigger at random distances/3d positions
                 String birds = Strings::AtmosLocation + "birds";
-                Event* event;
+                
                 
                 ERRCHECK(eventsystem->getEvent(birds.toUTF8(),
                                                FMOD_EVENT_DEFAULT,
-                                               &event));
+                                               &birdEvent));
+                EventParameter* birdParam;
+                ERRCHECK(birdEvent->getParameter(Strings::BirdCounter, &birdParam));
+                ERRCHECK(birdParam->setValue(Globals::birdCounter));
                 
-                soldier->addEvent(event);
-                //ERRCHECK(event->start());
+                soldier->addEvent(birdEvent);
+                ERRCHECK(birdEvent->start());
+
+                //Adds running sounds to soldier, constantly looping, param is set after each footstep                   
+                ERRCHECK(eventsystem->getEvent(Strings::RunningBreath,
+                                                   FMOD_EVENT_DEFAULT, 
+                                                   &runningEvent));
+                    
+                EventParameter* param;
+                ERRCHECK(runningEvent->getParameter(Strings::RunningParam, &param));
+                ERRCHECK(param->setValue(Globals::runningCounter));
+                
+                soldier->addEvent(runningEvent);
+                ERRCHECK(runningEvent->start());
+                
             }
             
         }
-        //DBG("Created = " << uniqueString);
 	}
 	
-    
-    void startLooping (String const& name, int gameObjectInstanceID)
-    {
-        String uniqueString = makeUniqueString(name, gameObjectInstanceID);
-        
-        if (name == Strings::ObjectWaterfall || name == Strings::ObjectSmallWaterfall || name == Strings::ObjectRiver)
-        {
-            VectorData* waterData = objects.get(uniqueString);
-            if(waterData)
-            {
-                waterData->stopEvents();
-                String waterString = Strings::WaterLocation+name;
-                DBG("Starting = " << uniqueString);
-                Event* event;
-                
-                ERRCHECK(eventsystem->getEvent(waterString.toUTF8(),
-                                               FMOD_EVENT_DEFAULT, 
-                                               &event));
-                
-                waterData->addEvent(event);
-                ERRCHECK(event->start());
-            }
-        }
-    }
+
 	/** Messages to indicate that objects created via handleCreate() should be
 	 deleted.
 	 
@@ -407,9 +457,7 @@ public:
 					needed for many of these objects
 	 */
 	void handleDestroy(String const& name, int gameObjectInstanceID)
-	{
-        //DBG("Destroy = " << name);
-        
+	{        
         VectorData* vecData = 0;
 
         //Creates unique names for all objects, only really required for rivers, cans, barrels, bricks, chairs, tyres, cabinets
@@ -470,6 +518,7 @@ public:
         }
         else if (name == Strings::ObjectWaterfall || name == Strings::ObjectSmallWaterfall || name == Strings::ObjectSmallHouse || name == Strings::ObjectUnderBridge || name == Strings::ObjectOverBridge || name == Strings::ObjectLargeHouse ||  name == Strings::ObjectRiver)
         {
+            //Sets vector data for objects which do not move
             handleStaticVector(name, gameObjectInstanceID, param, vector);
         }
         
@@ -477,7 +526,7 @@ public:
         {
             uniqueString = makeUniqueString(name, gameObjectInstanceID);
             
-            if (name == Strings::Soldier || name == Strings::Bullet)
+            if (name == Strings::Soldier || name == Strings::Bullet || name == Strings::Grenade)
             {
                 uniqueString = name;
                 //Un comment to get location for adding new sounds
@@ -567,18 +616,52 @@ public:
                 {
                     DBG("Settings " << name <<1<< " to position" << vector->x << " " << vector->y << " " << vector->z);
                     // set the position properties in game world units (metres here)                    
-                    ERRCHECK(underBridgeReverb1->set3DAttributes(vector, 4, 6));
+                    ERRCHECK(underBridgeReverb1->set3DAttributes(vector, 10, 16));
                 }
                 else
                 {
                     DBG("Settings " << name <<2<< " to position" << vector->x << " " << vector->y << " " << vector->z);
-                    ERRCHECK(underBridgeReverb2->set3DAttributes(vector, 4, 6));
+                    ERRCHECK(underBridgeReverb2->set3DAttributes(vector, 10, 16));
                 }
                 
             }
         }
     }
 
+    
+    void startLooping (String const& name, int gameObjectInstanceID)
+    {
+        String uniqueString = makeUniqueString(name, gameObjectInstanceID);
+        
+        name == Strings::ObjectRiver ? (Globals::riverCounter++) : (Globals::riverCounter);
+        
+        if (name == Strings::ObjectWaterfall || name == Strings::ObjectSmallWaterfall || name == Strings::ObjectRiver)
+        {
+            VectorData* waterData = objects.get(uniqueString);
+            if(waterData)
+            {
+                waterData->stopEvents();
+                
+                String waterString;
+                //Allows different sounds to be used for each river section, stream at the top, bigger river under the bridge
+                if (Globals::riverCounter < 2)
+                    waterString = Strings::WaterLocation+name;
+                else    
+                    waterString = Strings::WaterLocation+name+String(2);
+                
+                DBG("Starting = " << waterString);
+                Event* event;
+                
+                ERRCHECK(eventsystem->getEvent(waterString.toUTF8(),
+                                               FMOD_EVENT_DEFAULT, 
+                                               &event));
+                
+                waterData->addEvent(event);
+                ERRCHECK(event->start());
+            }
+        }
+    }
+    
 	/** String type messages from the game (various).
 	 
 	 @param name		One of the following:
@@ -646,21 +729,34 @@ public:
                 if (content == Strings::GunReload || content == Strings::GunFire)
                     gunData = objects.get(Strings::Soldier);
                 
-//                if (content == Strings::GrenadeExplode)
-//                    gunData = objects.get(Strings::Grenade);
-                    
                 if(gunData)
                 {
                     //Gun Shot
                     Event* event;
                     
+                    
+                    
                     ERRCHECK(eventsystem->getEvent(gunString.toUTF8(),
                                                    FMOD_EVENT_DEFAULT, 
                                                    &event));
-                    
+                                      
                     gunData->addEvent(event);
-
                     ERRCHECK(event->start());
+                    
+                    if (!Globals::grenadeLauncher)
+                    {
+                        //Checks to make sure gun is in use, grenades have their own bird flying event
+                        //If a certain amount of time has past since the last gun shot triggers the sound of birds flying away
+                        if (Globals::birdCounter > birdCounterTrigger)
+                        {
+                            gunData->addEvent(birdsFlying);
+                            ERRCHECK(birdsFlying->start());
+                            
+                            DBG("Bird sounds triggered");
+                        }
+                        //Sets the bird counter to 0 every time the gun is fired. Makes sure the birds only return when the gun hasn't been fired for a while
+                        Globals::birdCounter = 0;
+                    }
                 }
                 
                 
@@ -741,8 +837,7 @@ public:
 	 */
 	void handleReal(String const& name, int gameObjectInstanceID, String const& param, double value)
 	{
-        String uniqueString = makeUniqueString(name, gameObjectInstanceID);
-        if (uniqueString == Strings::Grenade)
+        if (name == Strings::Grenade)
         {
             if (param == Strings::GrenadeExplode)
             {
@@ -767,6 +862,19 @@ public:
                                                    &event));
                     grenadeData->addEvent(event);
                     ERRCHECK(event->start());
+                    
+                    //If a certain amount of time has past since the last gun shot triggers the sound of birds flying away
+                    if (Globals::birdCounter > birdCounterTrigger)
+                    {
+                        //Placed in the grenadeExplode event so the sound waits till the grenade has exploded instead of when it has been fired
+
+                        grenadeData->addEvent(birdsFlying);
+                        ERRCHECK(birdsFlying->start());
+                        
+                        DBG("Bird sounds triggered");
+                    }
+                    //Sets the bird counter to 0 every time the gun is fired. Makes sure the birds only return when the gun hasn't been fired for a while
+                    Globals::birdCounter = 0;
                     
                     
                     grenadeString = grenadeString+"Ring";
@@ -852,6 +960,12 @@ public:
 	void handleHit(String const& name, int gameObjectInstanceID, Collision const& collision)
 	{
         if (name == Strings::Soldier) {
+            
+            if (collision.velocity == 1)
+                Globals::running = true;
+            else
+                Globals::running = false;
+            
             VectorData* soldierData = objects.get(Strings::Soldier);
             if(soldierData)
             {
@@ -862,14 +976,13 @@ public:
                 else
                     footstepString = Strings::FootstepLocation+collision.otherName;
                 
-                //DBG(footstepString);
                 Event* event;
                 
                 ERRCHECK(eventsystem->getEvent(footstepString.toUTF8(),
                                                FMOD_EVENT_DEFAULT, 
                                                &event));
                 
-                EventParameter* param;
+                EventParameter* param = nullptr;
                 //Not error checked as some footsteps don't have a velocity parameter
                 event->getParameter(Strings::Velocity, &param);
                 
@@ -878,13 +991,20 @@ public:
                 
                 soldierData->addEvent(event);
                 ERRCHECK(event->start());
-                
+
+                if (Globals::runningCounter < 1200)
+                {
+                    //If soldier has been running for longer than 1200 ticks, no longer change the parameter as by that point the breathing is at max speed/volume
+                    EventParameter* param;
+                    ERRCHECK(runningEvent->getParameter(Strings::RunningParam, &param));
+                    ERRCHECK(param->setValue(Globals::runningCounter));
+                }                
             }
         }
         
-        else if (name == Strings::Bullet)
+        else if (name == Strings::Bullet || name == Strings::Grenade)
         {
-            String bulletString = Strings::GunsLocation + name + "/" + collision.otherName;
+            String bulletString = Strings::GunsLocation + Strings::Bullet + "/" + collision.otherName;
             
             VectorData* bulletData = objects.get(Strings::Bullet);
             if(bulletData)
@@ -906,30 +1026,26 @@ public:
             if (collision.velocity > 0)
             {
                 String uniqueString = makeUniqueString(name, gameObjectInstanceID);
-                if (name == Strings::ObjectBarrel || /*name == Strings::ObjectInkCan ||*/ name == Strings::ObjectBrick)
+                
+                String collisionString = Strings::CollisionsLocation + name;
+                DBG(collisionString);
+                VectorData* collisionObject = objects.get(uniqueString);
+                
+                if (collisionObject)
                 {
-                    //DELETED SOUND DEF FOR INKCAN COS YOU'RE A TIT
-                    String collisionString = Strings::CollisionsLocation + name;
-                    DBG(collisionString);
-                    VectorData* collisionObject = objects.get(uniqueString);
+                    Event* event;
                     
-                    if (collisionObject)
-                    {
-                        Event* event;
-                        
-                        ERRCHECK(eventsystem->getEvent(collisionString.toUTF8(),
-                                                       FMOD_EVENT_DEFAULT, 
-                                                       &event));
-                        
-                        EventParameter* param;
-                        ERRCHECK(event->getParameter(Strings::Velocity, &param));
-                        
-                        ERRCHECK(param->setValue(collision.velocity));
-                        
-                        collisionObject->addEvent(event);
-                        ERRCHECK(event->start());
-                    }
+                    ERRCHECK(eventsystem->getEvent(collisionString.toUTF8(),
+                                                   FMOD_EVENT_DEFAULT, 
+                                                   &event));
                     
+                    EventParameter* param;
+                    ERRCHECK(event->getParameter(Strings::Velocity, &param));
+                    
+                    ERRCHECK(param->setValue(collision.velocity));
+                    
+                    collisionObject->addEvent(event);
+                    ERRCHECK(event->start());
                 }
             }
         }
