@@ -128,8 +128,6 @@ namespace Globals {
 
 //The amount of ticks that must have past since the last gun shot for the birds to fly away again
 #define birdCounterTrigger 750
-//The amount of ticks that must have past for the birds to return and the bird event to start again
-
 
 //typedef for storing a dictionary of Vector locations and FMOD events related to each object
 typedef PointerDictionary<VectorData> VectorDictionary;
@@ -154,6 +152,7 @@ private:
     EventReverb* smallHouseReverb;
     EventReverb* largeHouseReverb;
     
+    //Contains the vector data of all objects in the game
     VectorDictionary objects;
     
     enum Commands
@@ -201,7 +200,7 @@ public:
         // get the reverb properties set up in FMOD designer
 		FMOD_REVERB_PROPERTIES smallHouseProperties = FMOD_PRESET_LIVINGROOM;
         FMOD_REVERB_PROPERTIES largeHouseProperties = FMOD_PRESET_ROOM;
-		//ERRCHECK(eventsystem->getReverbPreset(Strings::smallhouseverb, &smallHouseVerbProperties, 0));
+
 		// ..and apply them to our reverb
         ERRCHECK(smallHouseReverb->setProperties(&smallHouseProperties));
         ERRCHECK(largeHouseReverb->setProperties(&largeHouseProperties));
@@ -212,7 +211,7 @@ public:
 		ERRCHECK(underBridgeReverb1->setProperties(&underBridgeProperties));
         ERRCHECK(underBridgeReverb2->setProperties(&underBridgeProperties));
 		
-		// set the "ambient" reverb using a buit-in preset
+		// set the "ambient" reverb
 		FMOD_REVERB_PROPERTIES ambientProperties = FMOD_PRESET_PLAIN;
 		ERRCHECK(eventsystem->setReverbAmbientProperties(&ambientProperties));
         
@@ -260,15 +259,32 @@ public:
             {
                 if (birdEvent != nullptr)
                 {
-                    //Makes the bird sounds fade in after they have flown away, but stops once the flying away sound is ready to be triggered again
+                    //Makes the bird sounds fade in after they have flown away, but stops counting once the flying away sound is ready to be triggered again
                     EventParameter* param;
                     ERRCHECK(birdEvent->getParameter(Strings::BirdCounter, &param));
                     //DBG("Setting bird counter to " << Globals::birdCounter);
                     ERRCHECK(param->setValue(Globals::birdCounter));
                 }
             }
+            
+            if (Globals::runningCounter < 1200)
+            {
+                //If soldier has been running for longer than 1200 ticks, no longer change the parameter as by that point the breathing is at max speed/volume
+                
+                
+                if (runningEvent != nullptr)
+                {
+                    bool test;
+                    runningEvent->getPaused(&test);
+                    if (!test)
+                    {
+                        EventParameter* param;
+                        ERRCHECK(runningEvent->getParameter(Strings::RunningParam, &param));
+                        ERRCHECK(param->setValue(Globals::runningCounter));
+                    }
+                }
+            }  
 		}
-        DBG(Globals::runningCounter);
 	}
     
     //Used to give each instance of a barrel or brick etc. a unique name for storing in positions dictionary
@@ -381,6 +397,8 @@ public:
 	 */
 	void handleCreate(String const& name, int gameObjectInstanceID)
 	{
+        
+        DBG("Creating " << name);
         String uniqueString;
         if (name == Strings::Soldier || name == Strings::Camera)
         {
@@ -414,7 +432,7 @@ public:
                 soldier->addEvent(birdEvent);
                 ERRCHECK(birdEvent->start());
 
-                //Adds running sounds to soldier, constantly looping, param is set after each footstep                   
+                //Adds running sounds to soldier, constantly looping, param is set every tick                   
                 ERRCHECK(eventsystem->getEvent(Strings::RunningBreath,
                                                    FMOD_EVENT_DEFAULT, 
                                                    &runningEvent));
@@ -529,11 +547,6 @@ public:
             if (name == Strings::Soldier || name == Strings::Bullet || name == Strings::Grenade)
             {
                 uniqueString = name;
-                //Un comment to get location for adding new sounds
-//                if (param == Strings::VectorPosition)
-//                DBG(name << " position" << vector->x << " " << vector->y << " " << vector->z);
-//                if (param == Strings::VectorVelocity)
-//                    DBG(name << " velocity" << vector->x << " " << vector->y << " " << vector->z);
             }
         
             if (param == Strings::VectorPosition) {
@@ -578,7 +591,7 @@ public:
     void handleStaticVector (String const& name, int gameObjectInstanceID, String const& param, const Vector3* vector)
     {
         String uniqueString = makeUniqueString(name, gameObjectInstanceID);
-        
+        //Only sets position as objects do not move, therefore no velocity or direction
         if (param == Strings::VectorPosition)
         {
             if (name == Strings::ObjectRiver || name == Strings::ObjectSmallWaterfall || name == Strings::ObjectWaterfall)
@@ -589,11 +602,6 @@ public:
                     objectData->setVectors(vector, nullptr, nullptr);
                 }
                 startLooping (name, gameObjectInstanceID);
-            }
-            
-            if (name == Strings::ObjectOverBridge)
-            {
-                
             }
             
             if (name == Strings::ObjectSmallHouse)
@@ -643,7 +651,7 @@ public:
                 waterData->stopEvents();
                 
                 String waterString;
-                //Allows different sounds to be used for each river section, stream at the top, bigger river under the bridge
+                //Allows different sounds to be used for each river section, stream at the top, bigger river under the bridge and by dam
                 if (Globals::riverCounter < 2)
                     waterString = Strings::WaterLocation+name;
                 else    
@@ -712,22 +720,13 @@ public:
                 String gunString = Strings::GunsLocation;
                 
                 if (Globals::grenadeLauncher)
-                {
                     gunString = gunString + "grenade";
-                }
                 else
-                {
                     gunString = gunString + "gun";
-                }
                 
                 gunString = gunString + content;
                 
-                //DBG(gunString);
-                
-                VectorData* gunData;
-                
-                if (content == Strings::GunReload || content == Strings::GunFire)
-                    gunData = objects.get(Strings::Soldier);
+                VectorData* gunData = objects.get(Strings::Soldier);
                 
                 if(gunData)
                 {
@@ -816,6 +815,7 @@ public:
             //If soldier
             if (param == Strings::Gun)
             {
+                //True if using grenadeLauncher false if using the gun
                 Globals::grenadeLauncher = value;
             }
         }
@@ -847,15 +847,7 @@ public:
                 {                    
                     Event* event;
                     Event* ring;
-                    String grenadeString;
-                    
-                    if(Globals::grenadeWater)
-                    {
-                        grenadeString = Strings::GunsLocation+"explodeWater";
-                        Globals::grenadeWater = false;
-                    }
-                    else
-                        grenadeString = Strings::GunsLocation+"explode";
+                    String grenadeString = Strings::GunsLocation+"explode";
                     
                     ERRCHECK(eventsystem->getEvent(grenadeString.toUTF8(),
                                                    FMOD_EVENT_DEFAULT, 
@@ -867,8 +859,10 @@ public:
                     if (Globals::birdCounter > birdCounterTrigger)
                     {
                         //Placed in the grenadeExplode event so the sound waits till the grenade has exploded instead of when it has been fired
-
-                        grenadeData->addEvent(birdsFlying);
+                        //Position the birds flying sound on the soldier so it is always distant and away from the soldier. Positioning the sound on the grenade meant that the birds could be triggered too close to the listener
+                        VectorData* soldierData = objects.get(Strings::Soldier);
+                        
+                        soldierData->addEvent(birdsFlying);
                         ERRCHECK(birdsFlying->start());
                         
                         DBG("Bird sounds triggered");
@@ -876,7 +870,7 @@ public:
                     //Sets the bird counter to 0 every time the gun is fired. Makes sure the birds only return when the gun hasn't been fired for a while
                     Globals::birdCounter = 0;
                     
-                    
+                    //Adds a loud ringing sound depending on how close the explosion was. Being able to trigger a global heavy low pass filter would complete this effect
                     grenadeString = grenadeString+"Ring";
                     
                     ERRCHECK(eventsystem->getEvent(grenadeString.toUTF8(),
@@ -893,7 +887,7 @@ public:
                         float distance = grenadeData->getPos()->z - soldierData->getPos()->z;
                         DBG(distance);
                         ERRCHECK(param->setValue(distance));
-                        //ERRCHECK(ring->start());
+                        ERRCHECK(ring->start());
                         
                     }
                   
@@ -960,7 +954,7 @@ public:
 	void handleHit(String const& name, int gameObjectInstanceID, Collision const& collision)
 	{
         if (name == Strings::Soldier) {
-            
+            //0.4 is the general walking velocity, 1 is running
             if (collision.velocity == 1)
                 Globals::running = true;
             else
@@ -990,15 +984,7 @@ public:
                     ERRCHECK(param->setValue(collision.velocity));
                 
                 soldierData->addEvent(event);
-                ERRCHECK(event->start());
-
-                if (Globals::runningCounter < 1200)
-                {
-                    //If soldier has been running for longer than 1200 ticks, no longer change the parameter as by that point the breathing is at max speed/volume
-                    EventParameter* param;
-                    ERRCHECK(runningEvent->getParameter(Strings::RunningParam, &param));
-                    ERRCHECK(param->setValue(Globals::runningCounter));
-                }                
+                ERRCHECK(event->start());            
             }
         }
         
