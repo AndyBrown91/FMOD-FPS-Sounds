@@ -113,6 +113,9 @@ namespace Strings
     static const char* ExplodeDistance = "explodeDistance";
     static const char* RunningParam = "runningCounter";
     static const char* BirdCounter = "birdCounter";
+    
+//Reverb
+    static const char* UnderBridgeReverb = "underBridgeReverb";
 }
 
 namespace Globals {
@@ -197,7 +200,8 @@ public:
         ERRCHECK(eventsystem->createReverb(&smallHouseReverb));
         ERRCHECK(eventsystem->createReverb(&largeHouseReverb));
         
-        // get the reverb properties set up in FMOD designer
+
+        // get the preset reverb property
 		FMOD_REVERB_PROPERTIES smallHouseProperties = FMOD_PRESET_LIVINGROOM;
         FMOD_REVERB_PROPERTIES largeHouseProperties = FMOD_PRESET_ROOM;
 
@@ -205,8 +209,10 @@ public:
         ERRCHECK(smallHouseReverb->setProperties(&smallHouseProperties));
         ERRCHECK(largeHouseReverb->setProperties(&largeHouseProperties));
         
-		// get the preset reverb property
-		FMOD_REVERB_PROPERTIES underBridgeProperties = FMOD_PRESET_STONECORRIDOR;/*FMOD_PRESET_CAVE;*/
+        // get the reverb properties set up in FMOD designer
+		//FMOD_REVERB_PROPERTIES underBridgeProperties = FMOD_PRESET_STONEROOM;
+        FMOD_REVERB_PROPERTIES underBridgeProperties;
+        ERRCHECK(eventsystem->getReverbPreset(Strings::UnderBridgeReverb, & underBridgeProperties, 0));
 		// ..and apply them to our reverb
 		ERRCHECK(underBridgeReverb1->setProperties(&underBridgeProperties));
         ERRCHECK(underBridgeReverb2->setProperties(&underBridgeProperties));
@@ -262,7 +268,6 @@ public:
                     //Makes the bird sounds fade in after they have flown away, but stops counting once the flying away sound is ready to be triggered again
                     EventParameter* param;
                     ERRCHECK(birdEvent->getParameter(Strings::BirdCounter, &param));
-                    //DBG("Setting bird counter to " << Globals::birdCounter);
                     ERRCHECK(param->setValue(Globals::birdCounter));
                 }
             }
@@ -274,7 +279,7 @@ public:
                 
                 if (runningEvent != nullptr)
                 {
-                    bool test;
+                    bool test = true;
                     runningEvent->getPaused(&test);
                     if (!test)
                     {
@@ -397,8 +402,6 @@ public:
 	 */
 	void handleCreate(String const& name, int gameObjectInstanceID)
 	{
-        
-        DBG("Creating " << name);
         String uniqueString;
         if (name == Strings::Soldier || name == Strings::Camera)
         {
@@ -622,13 +625,11 @@ public:
                 ERRCHECK(underBridgeReverb1->get3DAttributes(0, &minCheck, 0));
                 if(minCheck == 0)
                 {
-                    DBG("Settings " << name <<1<< " to position" << vector->x << " " << vector->y << " " << vector->z);
                     // set the position properties in game world units (metres here)                    
                     ERRCHECK(underBridgeReverb1->set3DAttributes(vector, 10, 16));
                 }
                 else
                 {
-                    DBG("Settings " << name <<2<< " to position" << vector->x << " " << vector->y << " " << vector->z);
                     ERRCHECK(underBridgeReverb2->set3DAttributes(vector, 10, 16));
                 }
                 
@@ -657,7 +658,6 @@ public:
                 else    
                     waterString = Strings::WaterLocation+name+String(2);
                 
-                DBG("Starting = " << waterString);
                 Event* event;
                 
                 ERRCHECK(eventsystem->getEvent(waterString.toUTF8(),
@@ -719,6 +719,8 @@ public:
             {
                 String gunString = Strings::GunsLocation;
                 
+                //Checks if the grenadelauncher is in use, changes between grenadelauncher reload/firing and machine gun
+                //Machine gun reloading has a longer animation so a longer version of the reloading sound was used 
                 if (Globals::grenadeLauncher)
                     gunString = gunString + "grenade";
                 else
@@ -750,8 +752,6 @@ public:
                         {
                             gunData->addEvent(birdsFlying);
                             ERRCHECK(birdsFlying->start());
-                            
-                            DBG("Bird sounds triggered");
                         }
                         //Sets the bird counter to 0 every time the gun is fired. Makes sure the birds only return when the gun hasn't been fired for a while
                         Globals::birdCounter = 0;
@@ -864,8 +864,6 @@ public:
                         
                         soldierData->addEvent(birdsFlying);
                         ERRCHECK(birdsFlying->start());
-                        
-                        DBG("Bird sounds triggered");
                     }
                     //Sets the bird counter to 0 every time the gun is fired. Makes sure the birds only return when the gun hasn't been fired for a while
                     Globals::birdCounter = 0;
@@ -884,14 +882,14 @@ public:
                         
                         EventParameter* param;
                         ERRCHECK(ring->getParameter(Strings::ExplodeDistance, &param));
-                        float distance = grenadeData->getPos()->z - soldierData->getPos()->z;
-                        DBG(distance);
+                        //Work out the distance from the soldier, if the soldier is facing the way which he didn't start then the number will be a minus, therefore abs is required, so the number can use the same parameter
+                        float distance = abs(grenadeData->getPos()->z - soldierData->getPos()->z);
+                        
                         ERRCHECK(param->setValue(distance));
+                        //Comment out the line below to turn the ringing off for collision testing purposes
                         ERRCHECK(ring->start());
                         
-                    }
-                  
-                    
+                    }                    
                 }
                 
             }
@@ -1008,13 +1006,11 @@ public:
         
         else
         {
-            DBG(name << " Collided with = " << collision.otherName << " Velocity = " << collision.velocity);
             if (collision.velocity > 0)
             {
                 String uniqueString = makeUniqueString(name, gameObjectInstanceID);
                 
                 String collisionString = Strings::CollisionsLocation + name;
-                DBG(collisionString);
                 VectorData* collisionObject = objects.get(uniqueString);
                 
                 if (collisionObject)
