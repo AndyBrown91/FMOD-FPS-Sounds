@@ -921,7 +921,7 @@
 <sounddeffolder>
 <name>Footsteps</name>
 <guid>{98aa922f-eb1b-4c2d-b74c-088b77195047}</guid>
-<open>0</open>
+<open>1</open>
 <sounddeffolder>
 <name>Concrete</name>
 <guid>{972a6ef0-dcda-4c3e-be5d-61970ddf3a04}</guid>
@@ -1009,7 +1009,7 @@
 <spawntime_max>0</spawntime_max>
 <spawn_max>1</spawn_max>
 <mode>0</mode>
-<pitch>0</pitch>
+<pitch>-1</pitch>
 <pitch_randmethod>1</pitch_randmethod>
 <pitch_random_min>0</pitch_random_min>
 <pitch_random_max>0</pitch_random_max>
@@ -2984,14 +2984,14 @@
 <guid>{8dfef902-4d14-4699-9814-13212532a0bc}</guid>
 <eventgroup_nextid>0</eventgroup_nextid>
 <event_nextid>0</event_nextid>
-<open>1</open>
+<open>0</open>
 <notes></notes>
 <eventgroup>
 <name>bullet</name>
 <guid>{b4ea3458-4179-4b0d-8189-0b7c0cdf1c65}</guid>
 <eventgroup_nextid>0</eventgroup_nextid>
 <event_nextid>0</event_nextid>
-<open>0</open>
+<open>1</open>
 <notes></notes>
 <simpleevent>
 <event>
@@ -5564,7 +5564,7 @@
 <guid>{5c1babf0-639c-4312-a512-86ebcf4fca8e}</guid>
 <eventgroup_nextid>0</eventgroup_nextid>
 <event_nextid>0</event_nextid>
-<open>0</open>
+<open>1</open>
 <notes></notes>
 <simpleevent>
 <event>
@@ -6924,7 +6924,7 @@
 <guid>{b15b14c5-3f1a-4554-94db-3a4b10472384}</guid>
 <eventgroup_nextid>0</eventgroup_nextid>
 <event_nextid>0</event_nextid>
-<open>1</open>
+<open>0</open>
 <notes></notes>
 <event>
 <name>birds</name>
@@ -10031,7 +10031,7 @@
 <car_loadsmooth>0.05</car_loadsmooth>
 <car_loadscale>6</car_loadscale>
 <volume_db>-7.93</volume_db>
-<pitch>-0.083333335816860198975</pitch>
+<pitch>0</pitch>
 <pitch_units>Semitones</pitch_units>
 <pitch_randomization>0</pitch_randomization>
 <pitch_randomization_units>Octaves</pitch_randomization_units>

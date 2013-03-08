@@ -921,7 +921,7 @@
 <sounddeffolder>
 <name>Footsteps</name>
 <guid>{98aa922f-eb1b-4c2d-b74c-088b77195047}</guid>
-<open>0</open>
+<open>1</open>
 <sounddeffolder>
 <name>Concrete</name>
 <guid>{972a6ef0-dcda-4c3e-be5d-61970ddf3a04}</guid>
@@ -1009,7 +1009,7 @@
 <spawntime_max>0</spawntime_max>
 <spawn_max>1</spawn_max>
 <mode>0</mode>
-<pitch>0</pitch>
+<pitch>-1</pitch>
 <pitch_randmethod>1</pitch_randmethod>
 <pitch_random_min>0</pitch_random_min>
 <pitch_random_max>0</pitch_random_max>
@@ -2991,7 +2991,7 @@
 <guid>{b4ea3458-4179-4b0d-8189-0b7c0cdf1c65}</guid>
 <eventgroup_nextid>0</eventgroup_nextid>
 <event_nextid>0</event_nextid>
-<open>0</open>
+<open>1</open>
 <notes></notes>
 <simpleevent>
 <event>
@@ -3418,7 +3418,7 @@
 <car_loadsmooth>0.05</car_loadsmooth>
 <car_loadscale>6</car_loadscale>
 <volume_db>-22.8</volume_db>
-<pitch>0</pitch>
+<pitch>-1</pitch>
 <pitch_units>Octaves</pitch_units>
 <pitch_randomization>0</pitch_randomization>
 <pitch_randomization_units>Octaves</pitch_randomization_units>
@@ -3607,7 +3607,7 @@
 <car_loadsmooth>0.05</car_loadsmooth>
 <car_loadscale>6</car_loadscale>
 <volume_db>-13.1</volume_db>
-<pitch>0</pitch>
+<pitch>-1</pitch>
 <pitch_units>Octaves</pitch_units>
 <pitch_randomization>0</pitch_randomization>
 <pitch_randomization_units>Octaves</pitch_randomization_units>
@@ -3985,7 +3985,7 @@
 <car_loadsmooth>0.05</car_loadsmooth>
 <car_loadscale>6</car_loadscale>
 <volume_db>-8.9</volume_db>
-<pitch>0</pitch>
+<pitch>-1</pitch>
 <pitch_units>Octaves</pitch_units>
 <pitch_randomization>0</pitch_randomization>
 <pitch_randomization_units>Octaves</pitch_randomization_units>

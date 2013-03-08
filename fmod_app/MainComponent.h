@@ -210,7 +210,6 @@ public:
         ERRCHECK(largeHouseReverb->setProperties(&largeHouseProperties));
         
         // get the reverb properties set up in FMOD designer
-		//FMOD_REVERB_PROPERTIES underBridgeProperties = FMOD_PRESET_STONEROOM;
         FMOD_REVERB_PROPERTIES underBridgeProperties;
         ERRCHECK(eventsystem->getReverbPreset(Strings::UnderBridgeReverb, & underBridgeProperties, 0));
 		// ..and apply them to our reverb
