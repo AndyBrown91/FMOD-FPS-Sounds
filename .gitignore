@@ -1,7 +1,11 @@
 Sounds
-media/.fsbcache/
-media/shooter.fsb/
-media/shooter.fev/
+media/.fsbcache
+media/Atmos
+media/Birds
+media/Collision
+media/Footsteps
+media/Gunshots
+media/Water
 
 .DS_Store
 *.swp
